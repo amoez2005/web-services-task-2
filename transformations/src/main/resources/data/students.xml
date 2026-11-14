@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<students>
+    <student>
+        <id>1</id><name>Alice Morgan</name><age>20</age><gpa>3.8</gpa><active>true</active><groupCode>A</groupCode>
+        <subjects>
+            <subject><name>Web Services</name><credits>5</credits><score>94.5</score></subject>
+            <subject><name>XML Technologies</name><credits>4</credits><score>89.0</score></subject>
+        </subjects>
+    </student>
+    <student>
+        <id>2</id><name>Daniel Reed</name><age>22</age><gpa>3.4</gpa><active>false</active><groupCode>B</groupCode>
+        <subjects>
+            <subject><name>Web Services</name><credits>5</credits><score>94.5</score></subject>
+            <subject><name>XML Technologies</name><credits>4</credits><score>89.0</score></subject>
+        </subjects>
+    </student>
+</students>

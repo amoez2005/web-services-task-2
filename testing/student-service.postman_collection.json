@@ -1,0 +1,153 @@
+{
+  "info": {
+    "name": "Student SOAP service - Task 2",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "endpoint",
+      "value": "http://localhost:8080/students"
+    }
+  ],
+  "item": [
+    {
+      "name": "Read published WSDL",
+      "request": {
+        "method": "GET",
+        "url": "{{endpoint}}?wsdl"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"WSDL is available\", () => pm.response.to.have.status(200));",
+              "pm.test(\"WSDL declares operations\", () => { pm.expect(pm.response.text()).to.include(\"getStudents\"); pm.expect(pm.response.text()).to.include(\"getStudent\"); });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "List students",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "text/xml; charset=utf-8"
+          },
+          {
+            "key": "SOAPAction",
+            "value": "\"\""
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<soap:Envelope xmlns:soap=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:stu=\"https://example.edu/students\">\n    <soap:Header/>\n    <soap:Body><stu:getStudents/></soap:Body>\n</soap:Envelope>\n",
+          "options": {
+            "raw": {
+              "language": "xml"
+            }
+          }
+        },
+        "url": "{{endpoint}}"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Expected HTTP status\", () => pm.response.to.have.status(200));",
+              "pm.test(\"Response contains Alice Morgan\", () => pm.expect(pm.response.text()).to.include(\"Alice Morgan\"));",
+              "pm.test(\"Response contains Daniel Reed\", () => pm.expect(pm.response.text()).to.include(\"Daniel Reed\"));",
+              "pm.test(\"Response contains Web Services\", () => pm.expect(pm.response.text()).to.include(\"Web Services\"));",
+              "pm.test(\"No SOAP fault\", () => pm.expect(pm.response.text()).not.to.match(/<(?:\\w+:)?Fault[\\s>]/));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Find student",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "text/xml; charset=utf-8"
+          },
+          {
+            "key": "SOAPAction",
+            "value": "\"\""
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<soap:Envelope xmlns:soap=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:stu=\"https://example.edu/students\">\n    <soap:Header/>\n    <soap:Body><stu:getStudent><id>1</id></stu:getStudent></soap:Body>\n</soap:Envelope>\n",
+          "options": {
+            "raw": {
+              "language": "xml"
+            }
+          }
+        },
+        "url": "{{endpoint}}"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Expected HTTP status\", () => pm.response.to.have.status(200));",
+              "pm.test(\"Response contains Alice Morgan\", () => pm.expect(pm.response.text()).to.include(\"Alice Morgan\"));",
+              "pm.test(\"Response contains 94.5\", () => pm.expect(pm.response.text()).to.include(\"94.5\"));",
+              "pm.test(\"No SOAP fault\", () => pm.expect(pm.response.text()).not.to.match(/<(?:\\w+:)?Fault[\\s>]/));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Missing student fault",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "text/xml; charset=utf-8"
+          },
+          {
+            "key": "SOAPAction",
+            "value": "\"\""
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<soap:Envelope xmlns:soap=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:stu=\"https://example.edu/students\">\n    <soap:Header/>\n    <soap:Body><stu:getStudent><id>999</id></stu:getStudent></soap:Body>\n</soap:Envelope>\n",
+          "options": {
+            "raw": {
+              "language": "xml"
+            }
+          }
+        },
+        "url": "{{endpoint}}"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Expected HTTP status\", () => pm.response.to.have.status(500));",
+              "pm.test(\"Response contains NOT_FOUND\", () => pm.expect(pm.response.text()).to.include(\"NOT_FOUND\"));",
+              "pm.test(\"Response contains 999\", () => pm.expect(pm.response.text()).to.include(\"999\"));"
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/" xmlns:stu="https://example.edu/students">
+    <soap:Header/>
+    <soap:Body><stu:getStudent><id>1</id></stu:getStudent></soap:Body>
+</soap:Envelope>
